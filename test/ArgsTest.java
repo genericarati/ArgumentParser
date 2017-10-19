@@ -8,8 +8,11 @@ import org.junit.rules.ExpectedException;
 
 public class ArgsTest {
 
+	@Rule
+	public ExpectedException expectedEx = ExpectedException.none();
+
 	@Test
-	public void booleanArgsMapShouldContainTrueForBooleanScema() {
+	public void booleanArgsMapShouldContainTrueForBooleanScema() throws Args.ArgsException {
 		Args subject = new Args("l", new String[] { "-l" });
 		assertEquals(true, subject.falseIfNull('l'));
 		assertEquals(true, subject.getBoolean('l'));
@@ -18,7 +21,7 @@ public class ArgsTest {
 	}
 
 	@Test
-	public void booleanArgsMapShouldNotContainStringScemaChars() {
+	public void booleanArgsMapShouldNotContainStringScemaChars() throws Args.ArgsException {
 		Args subject = new Args("l,p#", new String[] { "-l" });
 		subject.parseSchema();
 		assertEquals(true, subject.falseIfNull('l'));
@@ -28,49 +31,50 @@ public class ArgsTest {
 	}
 
 	@Test
-	public void booleanArgsMapShouldContainDefaultValue() {
+	public void booleanArgsMapShouldContainDefaultValue() throws Args.ArgsException {
 		Args subject = new Args("l", new String[] { "-l" });
 		subject.parseSchema();
 		assertEquals(true, subject.falseIfNull('l'));
 		assertEquals(false, subject.getBoolean('l'));
 	}
 
-	@Rule
-	public ExpectedException expectedEx = ExpectedException.none();
-
 	@Test
-	public void returnFalseIfArgumentsAreEmpty() {
+	public void returnFalseIfArgumentsAreEmpty() throws Args.ArgsException {
 		String[] args = {};
-		Args subject = new Args(null, args);
-		assertFalse(subject.isValidArguments());
+		expectedEx.expect(Args.ArgsException.class);
+		expectedEx.expectMessage("Arguments are not valid");
+		new Args("l", args);
 	}
 
 	@Test
-	public void returnFalseIfArgumentsAreNull() {
+	public void returnFalseIfArgumentsAreNull() throws Args.ArgsException {
 		String[] args = null;
-		Args subject = new Args(null, args);
-		assertFalse(subject.isValidArguments());
+		expectedEx.expect(Args.ArgsException.class);
+		expectedEx.expectMessage("Arguments are not valid");
+		new Args("l", args);
 	}
 
 	@Test
-	public void returnFalseIfSchemaIsNull() {
+	public void returnFalseIfSchemaIsNull() throws Args.ArgsException {
 		String[] args = { "-l" };
-		Args subject = new Args(null, args);
-		assertFalse(subject.isValidSchema());
+		expectedEx.expect(Args.ArgsException.class);
+		expectedEx.expectMessage("Schema is not valid");
+		new Args(null, args);
 	}
 
 	@Test
-	public void returnTrueIfSchemaIsValid() {
+	public void returnTrueIfSchemaIsValid() throws Args.ArgsException {
 		String[] args = { "-l" };
 		Args subject = new Args("l", args);
 		assertTrue(subject.isValidSchema());
 	}
 
 	@Test
-	public void returnFalseIfSchemaIsBlank() {
+	public void returnFalseIfSchemaIsBlank() throws Args.ArgsException {
 		String[] args = { "-l" };
-		Args subject = new Args("", args);
-		assertFalse(subject.isValidSchema());
+		expectedEx.expect(Args.ArgsException.class);
+		expectedEx.expectMessage("Schema is not valid");
+		new Args("", args);
 	}
 
 }

@@ -6,7 +6,7 @@ public class Args {
 	private String[] arguments;
 	private String schema;
 
-	public Args(String schema, String[] arguments) {
+	public Args(String schema, String[] arguments) throws ArgsException {
 		this.arguments = arguments;
 		this.schema = schema;
 		booleanArgs = new HashMap<>();
@@ -27,12 +27,18 @@ public class Args {
 			return true;
 	}
 
-	public void parse() {
-		if (isValidArguments() && isValidSchema()) {
+	public void parse() throws ArgsException {
+		if (isValidSchema()) {
 			parseSchema();
-			parseArguments();
+		} else {
+			throw new ArgsException("Schema is not valid");
 		}
 
+		if (isValidArguments()) {
+			parseArguments();
+		} else {
+			throw new ArgsException("Arguments are not valid");
+		}
 	}
 
 	private void parseArguments() {
@@ -67,6 +73,10 @@ public class Args {
 	}
 
 	protected class ArgsException extends Exception {
+
+		public ArgsException(String errorMessage) {
+			super(errorMessage);
+		}
 
 	}
 }
