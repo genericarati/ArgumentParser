@@ -6,10 +6,11 @@ public class Args {
 	private String[] arguments;
 	private String schema;
 
-	public Args(String[] arguments, String schema) {
+	public Args(String schema, String[] arguments) {
 		this.arguments = arguments;
 		this.schema = schema;
 		booleanArgs = new HashMap<>();
+		parse();
 	}
 
 	protected boolean isValidSchema() {
@@ -31,12 +32,13 @@ public class Args {
 			parseSchema();
 			parseArguments();
 		}
+
 	}
 
 	private void parseArguments() {
-		for (int i=0; i< arguments.length; i++){
-			if (booleanArgs.containsKey(arguments[i].charAt(0))){
-				booleanArgs.put(arguments[i].charAt(0), true);
+		for (int i = 0; i < arguments.length; i++) {
+			if (booleanArgs.containsKey(arguments[i].charAt(1))) {
+				booleanArgs.put(arguments[i].charAt(1), true);
 			}
 		}
 	}
@@ -62,5 +64,9 @@ public class Args {
 			return this.booleanArgs.get(schemaChar);
 		else
 			return false;
+	}
+
+	protected class ArgsException extends Exception {
+
 	}
 }
