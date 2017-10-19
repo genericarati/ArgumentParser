@@ -10,13 +10,33 @@ import org.junit.Test;
 public class ArgsTest {
 
 	@Test
-	public void booleanArgsMapShouldContainDefaultValue(){
-		Map<Character, Boolean> map = new HashMap<>();
-		Args subject = new Args(new String[]{"l"},"l,p#");
+	public void booleanArgsMapShouldContainTrueForBooleanScema(){
+		Args subject = new Args(new String[]{"l","p#"},"l,p#");
 		subject.parse();
-		assertEquals(false, subject.getBoolean('l'));
-		
+		assertEquals(true, subject.falseIfNull('l'));
+		assertEquals(true, subject.getBoolean('l'));
+		assertEquals(false, subject.getBoolean('p'));
+		assertEquals(false, subject.falseIfNull('p'));
 	}
+	
+	@Test
+	public void booleanArgsMapShouldNotContainStringScemaChars(){
+		Args subject = new Args(new String[]{"l","p#"},"l,p#");
+		subject.parseSchema();
+		assertEquals(true, subject.falseIfNull('l'));
+		assertEquals(false, subject.getBoolean('l'));
+		assertEquals(false, subject.getBoolean('p'));
+		assertEquals(false, subject.falseIfNull('p'));
+	}
+	
+	@Test
+	public void booleanArgsMapShouldContainDefaultValue(){
+		Args subject = new Args(new String[]{"l"},"l,p#");
+		subject.parseSchema();
+		assertEquals(true, subject.falseIfNull('l'));
+		assertEquals(false, subject.getBoolean('l'));
+	}
+	
 	@Test
 	public void returnFalseIfArgumentsAreEmpty() {
 		String[] args = {};

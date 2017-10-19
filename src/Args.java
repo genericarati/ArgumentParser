@@ -29,17 +29,38 @@ public class Args {
 	public void parse() {
 		if (isValidArguments() && isValidSchema()) {
 			parseSchema();
+			parseArguments();
+		}
+	}
+
+	private void parseArguments() {
+		for (int i=0; i< arguments.length; i++){
+			if (booleanArgs.containsKey(arguments[i].charAt(0))){
+				booleanArgs.put(arguments[i].charAt(0), true);
+			}
 		}
 	}
 
 	protected void parseSchema() {
-
+		String[] schemaStrings = schema.split(",");
+		for (int i = 0; i < schemaStrings.length; i++) {
+			String s = schemaStrings[i];
+			if (s.length() == 1)
+				booleanArgs.put(s.charAt(0), false);
+		}
 	}
 
-	public boolean getBoolean(char schemaChar) {
-		if (this.booleanArgs.containsKey(schemaChar)) {
+	protected boolean falseIfNull(char schemaChar) {
+		if (booleanArgs.containsKey(schemaChar))
+			return true;
+		else
+			return false;
+	}
+
+	protected boolean getBoolean(char schemaChar) {
+		if (falseIfNull(schemaChar))
 			return this.booleanArgs.get(schemaChar);
-		}
-		return false;
+		else
+			return false;
 	}
 }
