@@ -12,7 +12,7 @@ public class ArgsTest {
 
 	@Test
 	public void booleanArgsMapShouldContainTrueForBooleanScema() throws Args.ArgsException {
-		Args subject = new Args("l,p#", new String[] { "-l","-p" });
+		Args subject = new Args("l", new String[] { "-l"});
 		assertEquals(true, subject.falseIfNull('l'));
 		assertEquals(true, subject.getBoolean('l'));
 	}
@@ -81,18 +81,27 @@ public class ArgsTest {
 
 	@Test
 	public void booleanArgsMapShouldContainArgument() throws Args.ArgsException {
-		String[] arguments = { "-l","-p" };
-		String schema = "l,p#";
+		String[] arguments = { "-l" };
+		String schema = "l";
 		Args args = new Args(schema, arguments);
 		assertEquals(true, args.getBoolean('l'));
 	}
 
 	@Test
-	public void stringArgsMapShouldContainArgument() throws Args.ArgsException {
+	public void shouldThrowExceptionWhenIntegerCouldNotBeFormatted() throws Args.ArgsException {
 		String[] arguments = { "-l","-p" };
 		String schema = "l,p#";
-		Args args = new Args(schema, arguments);
-		assertEquals("-p", args.getString('p'));
+		expectedEx.expect(Args.ArgsException.class);
+		expectedEx.expectMessage("Argument could not be parsed to integer");
+		new Args(schema, arguments);
 	}
+
+//	@Test
+//	public void integerArgsMapShouldContainArgument() throws Args.ArgsException {
+//		String[] arguments = { "-l","-p" };
+//		String schema = "l,p#";
+//		Args args = new Args(schema, arguments);
+//		assertEquals("-p", args.getString('p'));
+//	}
 
 }

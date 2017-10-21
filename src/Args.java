@@ -6,12 +6,13 @@ public class Args {
 	private String[] arguments;
 	private String schema;
 	private Map<Character, String> stringArgs;
+	private Map<Character, Integer> intArgs;
 
 	public Args(String schema, String[] arguments) throws ArgsException {
 		this.arguments = arguments;
 		this.schema = schema;
 		booleanArgs = new HashMap<>();
-		stringArgs = new HashMap<>();
+		intArgs = new HashMap<>();
 		parse();
 	}
 
@@ -47,11 +48,19 @@ public class Args {
 		for (int i = 0; i < arguments.length; i++) {
 			if (booleanArgs.containsKey(arguments[i].charAt(1))) {
 				booleanArgs.put(arguments[i].charAt(1), true);
-			} else if (stringArgs.containsKey(arguments[i].charAt(1))) {
-				stringArgs.put(arguments[i].charAt(1), arguments[i]);
+			} else if (intArgs.containsKey(arguments[i].charAt(1))) {
+				setIntArgs(i);
 			} else {
 				throw new ArgsException("Arguments don't match as per schema");
 			}
+		}
+	}
+
+	private void setIntArgs(int i) throws ArgsException {
+		try {
+			intArgs.put(arguments[i].charAt(1), Integer.parseInt(arguments[i]));
+		} catch (NumberFormatException e) {
+			throw new ArgsException("Argument could not be parsed to integer.");
 		}
 	}
 
@@ -62,8 +71,15 @@ public class Args {
 			if (s.length() == 1)
 				booleanArgs.put(s.charAt(0), false);
 			else
-				stringArgs.put(s.charAt(0), "");
+				intArgs.put(s.charAt(0), 0);
 		}
+	}
+
+	protected boolean zeroIfNull(char schemaChar) {
+		if (intArgs != null && intArgs.containsKey(schemaChar))
+			return true;
+		else
+			return false;
 	}
 
 	protected boolean falseIfNull(char schemaChar) {
@@ -82,6 +98,13 @@ public class Args {
 
 	public String getString(char schemaChar) {
 		return this.stringArgs.get(schemaChar);
+	}
+
+	public Integer getInteger(char schemaChar) {
+		if (!zeroIfNull(schemaChar))
+			return this.intArgs.get(schemaChar);
+		else
+			return 0;
 	}
 
 	protected class ArgsException extends Exception {
