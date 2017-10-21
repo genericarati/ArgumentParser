@@ -41,20 +41,24 @@ public class Args {
 		}
 	}
 
-	private void parseArguments() {
+	private void parseArguments() throws ArgsException {
 		for (int i = 0; i < arguments.length; i++) {
 			if (booleanArgs.containsKey(arguments[i].charAt(1))) {
 				booleanArgs.put(arguments[i].charAt(1), true);
+			} else {
+				throw new ArgsException("Arguments don't match as per schema");
 			}
 		}
 	}
 
-	protected void parseSchema() {
+	protected void parseSchema() throws ArgsException {
 		String[] schemaStrings = schema.split(",");
 		for (int i = 0; i < schemaStrings.length; i++) {
 			String s = schemaStrings[i];
 			if (s.length() == 1)
 				booleanArgs.put(s.charAt(0), false);
+			else
+				throw new ArgsException("Schema is not of boolean type.");
 		}
 	}
 
@@ -73,7 +77,6 @@ public class Args {
 	}
 
 	protected class ArgsException extends Exception {
-
 		public ArgsException(String errorMessage) {
 			super(errorMessage);
 		}

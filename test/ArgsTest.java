@@ -1,5 +1,4 @@
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Rule;
@@ -22,12 +21,14 @@ public class ArgsTest {
 
 	@Test
 	public void booleanArgsMapShouldNotContainStringScemaChars() throws Args.ArgsException {
+		expectedEx.expect(Args.ArgsException.class);
+		expectedEx.expectMessage("Schema is not of boolean type.");
 		Args subject = new Args("l,p#", new String[] { "-l" });
-		subject.parseSchema();
-		assertEquals(true, subject.falseIfNull('l'));
-		assertEquals(false, subject.getBoolean('l'));
-		assertEquals(false, subject.getBoolean('p'));
-		assertEquals(false, subject.falseIfNull('p'));
+//		subject.parseSchema();
+//		assertEquals(true, subject.falseIfNull('l'));
+//		assertEquals(false, subject.getBoolean('l'));
+//		assertEquals(false, subject.getBoolean('p'));
+//		assertEquals(false, subject.falseIfNull('p'));
 	}
 
 	@Test
@@ -75,6 +76,23 @@ public class ArgsTest {
 		expectedEx.expect(Args.ArgsException.class);
 		expectedEx.expectMessage("Schema is not valid");
 		new Args("", args);
+	}
+
+	@Test
+	public void shouldReturnExceptionIfArgumentsDontMatchSchema() throws Args.ArgsException {
+		String[] args = { "-l" };
+		String schema = "p";
+		expectedEx.expect(Args.ArgsException.class);
+		expectedEx.expectMessage("Arguments don't match as per schema");
+		new Args(schema, args);
+	}
+
+	@Test
+	public void booleanArgsMapShouldContainArgument() throws Args.ArgsException {
+		String[] arguments = { "-l" };
+		String schema = "l";
+		Args args = new Args(schema, arguments);
+		assertEquals(true, args.getBoolean('l'));
 	}
 
 }
