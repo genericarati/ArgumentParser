@@ -13,6 +13,7 @@ public class Args {
 		this.schema = schema;
 		booleanArgs = new HashMap<>();
 		intArgs = new HashMap<>();
+		stringArgs = new HashMap<>();
 		parse();
 	}
 
@@ -47,13 +48,23 @@ public class Args {
 	private void parseArguments() throws ArgsException {
 		for (int i = 0; i < arguments.length; i++) {
 			if (booleanArgs.containsKey(arguments[i].charAt(1))) {
-				booleanArgs.put(arguments[i].charAt(1), true);
+				setBooleanArgs(i);
 			} else if (intArgs.containsKey(arguments[i].charAt(1))) {
 				setIntArgs(i);
+			} else if (stringArgs.containsKey(arguments[i].charAt(1))) {
+				setStringArgs(i);
 			} else {
 				throw new ArgsException("Arguments don't match as per schema");
 			}
 		}
+	}
+
+	private void setStringArgs(int i) {
+		stringArgs.put(arguments[i].charAt(1), arguments[i]); 
+	}
+
+	private void setBooleanArgs(int i) {
+		booleanArgs.put(arguments[i].charAt(1), true);
 	}
 
 	private void setIntArgs(int i) throws ArgsException {
@@ -70,8 +81,11 @@ public class Args {
 			String s = schemaStrings[i];
 			if (s.length() == 1)
 				booleanArgs.put(s.charAt(0), false);
-			else
+			else if (s.charAt(1) == ('#')) {
 				intArgs.put(s.charAt(0), 0);
+			} else {
+				stringArgs.put(s.charAt(0), "");
+			}
 		}
 	}
 

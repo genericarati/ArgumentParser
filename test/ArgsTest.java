@@ -96,12 +96,12 @@ public class ArgsTest {
 		new Args(schema, arguments);
 	}
 
-//	@Test
-//	public void integerArgsMapShouldContainArgument() throws Args.ArgsException {
-//		String[] arguments = { "-l","-p" };
-//		String schema = "l,p#";
-//		Args args = new Args(schema, arguments);
-//		assertEquals("-p", args.getString('p'));
-//	}
+	@Test
+	public void stringArgsMapShouldContainArgument() throws Args.ArgsException {
+		String[] arguments = { "-l","-d" };
+		String schema = "l,d*";
+		Args args = new Args(schema, arguments);
+		assertEquals("-d", args.getString('d'));
+	}
 
 }
