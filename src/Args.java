@@ -5,11 +5,13 @@ public class Args {
 	private Map<Character, Boolean> booleanArgs;
 	private String[] arguments;
 	private String schema;
+	private Map<Character, String> stringArgs;
 
 	public Args(String schema, String[] arguments) throws ArgsException {
 		this.arguments = arguments;
 		this.schema = schema;
 		booleanArgs = new HashMap<>();
+		stringArgs = new HashMap<>();
 		parse();
 	}
 
@@ -45,6 +47,8 @@ public class Args {
 		for (int i = 0; i < arguments.length; i++) {
 			if (booleanArgs.containsKey(arguments[i].charAt(1))) {
 				booleanArgs.put(arguments[i].charAt(1), true);
+			} else if (stringArgs.containsKey(arguments[i].charAt(1))) {
+				stringArgs.put(arguments[i].charAt(1), arguments[i]);
 			} else {
 				throw new ArgsException("Arguments don't match as per schema");
 			}
@@ -58,7 +62,7 @@ public class Args {
 			if (s.length() == 1)
 				booleanArgs.put(s.charAt(0), false);
 			else
-				throw new ArgsException("Schema is not of boolean type.");
+				stringArgs.put(s.charAt(0), "");
 		}
 	}
 
@@ -76,10 +80,15 @@ public class Args {
 			return false;
 	}
 
+	public String getString(char schemaChar) {
+		return this.stringArgs.get(schemaChar);
+	}
+
 	protected class ArgsException extends Exception {
 		public ArgsException(String errorMessage) {
 			super(errorMessage);
 		}
 
 	}
+
 }

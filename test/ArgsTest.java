@@ -12,23 +12,15 @@ public class ArgsTest {
 
 	@Test
 	public void booleanArgsMapShouldContainTrueForBooleanScema() throws Args.ArgsException {
-		Args subject = new Args("l", new String[] { "-l" });
+		Args subject = new Args("l,p#", new String[] { "-l","-p" });
 		assertEquals(true, subject.falseIfNull('l'));
 		assertEquals(true, subject.getBoolean('l'));
-		assertEquals(false, subject.getBoolean('p'));
-		assertEquals(false, subject.falseIfNull('p'));
 	}
 
 	@Test
 	public void booleanArgsMapShouldNotContainStringScemaChars() throws Args.ArgsException {
-		expectedEx.expect(Args.ArgsException.class);
-		expectedEx.expectMessage("Schema is not of boolean type.");
 		Args subject = new Args("l,p#", new String[] { "-l" });
-//		subject.parseSchema();
-//		assertEquals(true, subject.falseIfNull('l'));
-//		assertEquals(false, subject.getBoolean('l'));
-//		assertEquals(false, subject.getBoolean('p'));
-//		assertEquals(false, subject.falseIfNull('p'));
+		assertEquals(false, subject.getBoolean('p'));
 	}
 
 	@Test
@@ -89,10 +81,18 @@ public class ArgsTest {
 
 	@Test
 	public void booleanArgsMapShouldContainArgument() throws Args.ArgsException {
-		String[] arguments = { "-l" };
-		String schema = "l";
+		String[] arguments = { "-l","-p" };
+		String schema = "l,p#";
 		Args args = new Args(schema, arguments);
 		assertEquals(true, args.getBoolean('l'));
+	}
+
+	@Test
+	public void stringArgsMapShouldContainArgument() throws Args.ArgsException {
+		String[] arguments = { "-l","-p" };
+		String schema = "l,p#";
+		Args args = new Args(schema, arguments);
+		assertEquals("-p", args.getString('p'));
 	}
 
 }
