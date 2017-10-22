@@ -2,9 +2,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Args {
-	private Map<Character, Boolean> booleanArgs;
 	private String[] arguments;
 	private String schema;
+	private Map<Character, Boolean> booleanArgs;
 	private Map<Character, String> stringArgs;
 	private Map<Character, Integer> intArgs;
 
@@ -47,11 +47,12 @@ public class Args {
 
 	private void parseArguments() throws ArgsException {
 		for (int i = 0; i < arguments.length; i++) {
-			if (booleanArgs.containsKey(arguments[i].charAt(1))) {
-				setBooleanArgs(i);
-			} else if (intArgs.containsKey(arguments[i].charAt(1))) {
-				setIntArgs(i);
-			} else if (stringArgs.containsKey(arguments[i].charAt(1))) {
+			char schemaChar = arguments[i].charAt(1);
+			if (booleanArgs.containsKey(schemaChar)) {
+				setBooleanArgs(schemaChar);
+			} else if (intArgs.containsKey(schemaChar)) {
+				setIntArgs(schemaChar);
+			} else if (stringArgs.containsKey(schemaChar)) {
 				setStringArgs(i);
 			} else {
 				throw new ArgsException("Arguments don't match as per schema");
@@ -60,19 +61,19 @@ public class Args {
 	}
 
 	private void setStringArgs(int i) {
-		stringArgs.put(arguments[i].charAt(1), arguments[i]); 
+		stringArgs.put(arguments[i].charAt(1), arguments[i]);
 	}
 
-	private void setBooleanArgs(int i) {
-		booleanArgs.put(arguments[i].charAt(1), true);
+	private void setBooleanArgs(char schemaChar) {
+		booleanArgs.put(schemaChar, true);
 	}
 
-	private void setIntArgs(int i) throws ArgsException {
-		try {
-			intArgs.put(arguments[i].charAt(1), Integer.parseInt(arguments[i]));
-		} catch (NumberFormatException e) {
-			throw new ArgsException("Argument could not be parsed to integer.");
-		}
+	private void setIntArgs(char schemaChar) throws ArgsException {
+			try{
+				intArgs.put(schemaChar, Integer.parseInt(String.valueOf(schemaChar)));
+			}catch(NumberFormatException e){
+				throw new ArgsException("Argument could not be parsed to integer.");
+			}
 	}
 
 	protected void parseSchema() throws ArgsException {
